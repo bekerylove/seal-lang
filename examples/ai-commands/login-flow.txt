@@ -1,0 +1,149 @@
+// ============================================================================
+// AI Agent Example: Performing a Login on a SEAL-powered page
+// ============================================================================
+//
+// This file shows the exact commands an AI agent sends to interact with a
+// SEAL page and the structured responses it receives back.
+//
+// The AI never parses HTML. It reads the SEAL manifest, acts on named
+// elements, and checks structured outcomes.
+// ============================================================================
+
+
+// ── Step 1: Discover the page ────────────────────────────────────────────────
+
+READ PAGE
+
+// Expected response:
+// {
+//   "page": {
+//     "id": "login-page",
+//     "title": "Sign In",
+//     "route": "/login",
+//     "theme": { "brand": "indigo" }
+//   },
+//   "actions": [
+//     {
+//       "id": "email",
+//       "type": "Input",
+//       "label": "Email address",
+//       "inputType": "email",
+//       "required": true,
+//       "actions": ["FILL", "CLEAR", "FOCUS", "BLUR", "READ"]
+//     },
+//     {
+//       "id": "password",
+//       "type": "Input",
+//       "label": "Password",
+//       "inputType": "password",
+//       "required": true,
+//       "actions": ["FILL", "CLEAR", "FOCUS", "BLUR", "READ"]
+//     },
+//     {
+//       "id": "remember-me",
+//       "type": "Checkbox",
+//       "label": "Remember me",
+//       "checked": false,
+//       "actions": ["CHECK", "UNCHECK", "TOGGLE", "READ"]
+//     },
+//     {
+//       "id": "forgot-password",
+//       "type": "Link",
+//       "label": "Forgot password?",
+//       "href": "/auth/forgot-password",
+//       "actions": ["CLICK", "NAVIGATE", "READ"]
+//     },
+//     {
+//       "id": "submit",
+//       "type": "Button",
+//       "label": "Sign In",
+//       "buttonType": "submit",
+//       "actions": ["CLICK", "FOCUS", "BLUR"]
+//     },
+//     {
+//       "id": "google-login",
+//       "type": "Button",
+//       "label": "Continue with Google",
+//       "actions": ["CLICK", "FOCUS", "BLUR"]
+//     },
+//     {
+//       "id": "signup-link",
+//       "type": "Link",
+//       "label": "Create one for free",
+//       "href": "/register",
+//       "actions": ["CLICK", "NAVIGATE", "READ"]
+//     }
+//   ]
+// }
+
+
+// ── Step 2: Fill credentials ─────────────────────────────────────────────────
+
+FILL #email WITH "myemail@gmail.com"
+
+// Expected response:
+// { "id": "email", "action": "FILL", "status": "ok", "value": "myemail@gmail.com" }
+
+FILL #password WITH "mypassword123"
+
+// Expected response:
+// { "id": "password", "action": "FILL", "status": "ok", "value": "[REDACTED]" }
+
+
+// ── Step 3: Optionally tick "Remember me" ────────────────────────────────────
+
+CHECK #remember-me
+
+// Expected response:
+// { "id": "remember-me", "action": "CHECK", "status": "ok", "checked": true }
+
+
+// ── Step 4: Submit the form ──────────────────────────────────────────────────
+
+CLICK #submit
+
+// Expected response (immediate):
+// { "id": "submit", "action": "CLICK", "status": "ok" }
+
+
+// ── Step 5: Wait for the outcome ─────────────────────────────────────────────
+
+WAIT FOR navigation TIMEOUT 5000
+
+// Success response:
+// { "event": "navigation", "status": "ok", "url": "/dashboard" }
+
+// Failure response (wrong password):
+// {
+//   "event": "navigation",
+//   "status": "blocked",
+//   "url": "/login",
+//   "errors": [
+//     { "id": "login-form", "message": "Invalid email or password." }
+//   ]
+// }
+
+
+// ── Step 6: Handle failure (if login was rejected) ───────────────────────────
+
+// AI agent reads the error state:
+READ #login-form
+
+// Response:
+// {
+//   "id": "login-form",
+//   "type": "Form",
+//   "state": "error",
+//   "errors": [
+//     { "field": null, "message": "Invalid email or password." }
+//   ]
+// }
+
+// Agent retries with corrected credentials:
+CLEAR #password
+FILL  #password WITH "correctpassword456"
+CLICK #submit
+WAIT FOR navigation TIMEOUT 5000
+
+// Success:
+// { "event": "navigation", "status": "ok", "url": "/dashboard" }

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sign in to your account">
+  <title>Sign In — SEAL Preview</title>
+  <!-- data-seal-page: rendered from examples/login.seal -->
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand:       #6366f1; /* indigo-500 */
+      --brand-dark:  #4f46e5; /* indigo-600 */
+      --brand-light: #e0e7ff; /* indigo-100 */
+      --gray-50:  #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --white:    #ffffff;
+      --red-500:  #ef4444;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-lg: 0 10px 40px -8px rgba(0,0,0,.18), 0 4px 12px -4px rgba(0,0,0,.10);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                   "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--gray-800);
+      background: var(--gray-50);
+    }
+
+    /* ── Background pattern ───────────────────────────────────────────── */
+    body {
+      background-color: var(--gray-50);
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(99,102,241,.08) 0%, transparent 55%),
+        radial-gradient(circle at 80% 80%, rgba(139,92,246,.06) 0%, transparent 55%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    /* ── Card wrapper ─────────────────────────────────────────────────── */
+    .card-wrapper {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    /* ── Card ─────────────────────────────────────────────────────────── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      border: 1px solid var(--gray-100);
+    }
+
+    /* ── Card header ──────────────────────────────────────────────────── */
+    .card-header {
+      padding: 2rem 2rem 1.25rem;
+      text-align: center;
+    }
+
+    .logo-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px;
+      height: 52px;
+      background: var(--brand-light);
+      border-radius: var(--radius-md);
+      margin-bottom: 1.25rem;
+    }
+
+    .logo-wrap svg {
+      width: 28px;
+      height: 28px;
+      color: var(--brand);
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      letter-spacing: -0.025em;
+    }
+
+    .card-subtitle {
+      margin-top: .25rem;
+      font-size: .875rem;
+      color: var(--gray-500);
+    }
+
+    /* ── Card body ────────────────────────────────────────────────────── */
+    .card-body {
+      padding: 0 2rem 1.5rem;
+    }
+
+    /* ── Form ─────────────────────────────────────────────────────────── */
+    .form-group {
+      margin-bottom: 1.125rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: .8125rem;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: .375rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: .625rem .875rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+      font-size: .9375rem;
+      font-family: inherit;
+      color: var(--gray-900);
+      background: var(--white);
+      transition: border-color .15s, box-shadow .15s;
+      outline: none;
+    }
+
+    .form-input::placeholder { color: var(--gray-400); }
+
+    .form-input:hover  { border-color: var(--gray-400); }
+
+    .form-input:focus  {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(99,102,241,.15);
+    }
+
+    .form-hint {
+      margin-top: .3125rem;
+      font-size: .75rem;
+      color: var(--gray-400);
+    }
+
+    /* ── Inline row (remember me + forgot) ───────────────────────────── */
+    .form-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .875rem;
+      color: var(--gray-600);
+      cursor: pointer;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--brand);
+      cursor: pointer;
+    }
+
+    .link-small {
+      font-size: .875rem;
+      color: var(--brand);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .link-small:hover { color: var(--brand-dark); text-decoration: underline; }
+
+    /* ── Buttons ──────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      width: 100%;
+      padding: .6875rem 1rem;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      font-size: .9375rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background .15s, box-shadow .15s, border-color .15s;
+      outline: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: var(--white);
+      border-color: var(--brand);
+    }
+
+    .btn-primary:hover  { background: var(--brand-dark); border-color: var(--brand-dark); }
+    .btn-primary:focus  { box-shadow: 0 0 0 3px rgba(99,102,241,.35); }
+
+    .btn-outline {
+      background: var(--white);
+      color: var(--gray-700);
+      border-color: var(--gray-300);
+    }
+
+    .btn-outline:hover  { border-color: var(--gray-400); background: var(--gray-50); }
+    .btn-outline:focus  { box-shadow: 0 0 0 3px rgba(99,102,241,.15); }
+
+    .btn svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* ── Divider ──────────────────────────────────────────────────────── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin: 1.125rem 0;
+      color: var(--gray-400);
+      font-size: .75rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--gray-200);
+    }
+
+    /* ── Card footer ──────────────────────────────────────────────────── */
+    .card-footer {
+      padding: .875rem 2rem 1rem;
+      background: var(--gray-50);
+      border-top: 1px solid var(--gray-100);
+      text-align: center;
+      font-size: .875rem;
+      color: var(--gray-500);
+    }
+
+    .card-footer a {
+      color: var(--brand);
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .card-footer a:hover { text-decoration: underline; }
+
+    /* ── SEAL badge (shows this is a SEAL-rendered page) ──────────────── */
+    .seal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .375rem;
+      margin-top: 1.25rem;
+      padding: .3125rem .75rem;
+      background: var(--gray-100);
+      border-radius: 99px;
+      font-size: .6875rem;
+      font-weight: 500;
+      color: var(--gray-500);
+      letter-spacing: .02em;
+    }
+
+    .seal-badge::before {
+      content: "";
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: var(--brand);
+      border-radius: 50%;
+    }
+
+    /* ── Google logo SVG color fix ────────────────────────────────────── */
+    .google-icon { display: flex; align-items: center; }
+  </style>
+</head>
+<body
+  data-seal-page="login-page"
+  data-seal-route="/login"
+  data-seal-theme="brand:indigo"
+  data-seal-actions="READ,SCROLL"
+>
+
+  <div class="card-wrapper">
+    <div class="card"
+         data-seal-id="login-card"
+         data-seal-type="Card"
+         data-seal-actions="READ,CLICK">
+
+      <!-- Card Header -->
+      <div class="card-header"
+           data-seal-id="card-header"
+           data-seal-type="CardHeader"
+           data-seal-actions="READ">
+
+        <div class="logo-wrap"
+             data-seal-id="brand-logo"
+             data-seal-type="Image"
+             data-seal-actions="READ,INSPECT">
+          <!-- Zap icon representing SEAL brand -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+
+        <h1 class="card-title"
+            data-seal-type="Text"
+            data-seal-as="h1"
+            data-seal-actions="READ">
+          Welcome back
+        </h1>
+        <p class="card-subtitle"
+           data-seal-type="Text"
+           data-seal-as="p"
+           data-seal-actions="READ">
+          Sign in to continue to your account
+        </p>
+      </div>
+
+      <!-- Card Body -->
+      <div class="card-body"
+           data-seal-id="card-body"
+           data-seal-type="CardBody"
+           data-seal-actions="READ">
+
+        <form id="login-form"
+              action="/auth/login"
+              method="POST"
+              novalidate
+              data-seal-id="login-form"
+              data-seal-type="Form"
+              data-seal-actions="SUBMIT,RESET,VALIDATE,READ">
+
+          <!-- Email -->
+          <div class="form-group">
+            <label class="form-label" for="email">Email address</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              class="form-input"
+              placeholder="you@example.com"
+              autocomplete="email"
+              required
+              aria-describedby="email-hint"
+              data-seal-id="email"
+              data-seal-type="Input"
+              data-seal-actions="FILL,CLEAR,FOCUS,BLUR,READ"
+            >
+            <p id="email-hint" class="form-hint">
+              Enter the email you registered with
+            </p>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              class="form-input"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              required
+              minlength="8"
+              data-seal-id="password"
+              data-seal-type="Input"
+              data-seal-actions="FILL,CLEAR,FOCUS,BLUR,READ"
+            >
+          </div>
+
+          <!-- Remember me + Forgot password -->
+          <div class="form-row">
+            <label class="checkbox-label"
+                   data-seal-id="remember-me"
+                   data-seal-type="Checkbox"
+                   data-seal-actions="CHECK,UNCHECK,TOGGLE,READ">
+              <input type="checkbox" name="remember" id="remember-me">
+              Remember me
+            </label>
+            <a href="/auth/forgot-password"
+               class="link-small"
+               data-seal-id="forgot-password"
+               data-seal-type="Link"
+               data-seal-actions="CLICK,NAVIGATE,READ">
+              Forgot password?
+            </a>
+          </div>
+
+          <!-- Submit -->
+          <button
+            id="submit"
+            type="submit"
+            class="btn btn-primary"
+            data-seal-id="submit"
+            data-seal-type="Button"
+            data-seal-actions="CLICK,FOCUS,BLUR"
+          >
+            Sign In
+          </button>
+
+          <!-- Divider -->
+          <div class="divider" aria-hidden="true">or</div>
+
+          <!-- Google -->
+          <button
+            id="google-login"
+            type="button"
+            class="btn btn-outline"
+            data-seal-id="google-login"
+            data-seal-type="Button"
+            data-seal-actions="CLICK,FOCUS,BLUR"
+          >
+            <!-- Google G logo -->
+            <svg viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            Continue with Google
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Card Footer -->
+      <div class="card-footer"
+           data-seal-type="CardFooter"
+           data-seal-actions="READ">
+        Don't have an account?
+        <a href="/register"
+           data-seal-id="signup-link"
+           data-seal-type="Link"
+           data-seal-actions="CLICK,NAVIGATE,READ">
+          Create one for free
+        </a>
+      </div>
+    </div>
+
+    <!-- SEAL attribution badge -->
+    <div style="text-align:center">
+      <span class="seal-badge">Rendered by SEAL</span>
+    </div>
+  </div>
+
+</body>
+</html>

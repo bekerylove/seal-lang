@@ -1,0 +1,363 @@
+// Product landing page example
+// Demonstrates: hero, features grid, testimonials, pricing cards, footer, full navigation
+
+Page #landing-page title="SEAL — Semantic and Action Language" route="/"
+  @meta description="SEAL is a markup language designed for the AI era. Build web pages that humans love and AI agents understand instantly."
+  @meta keywords="SEAL, markup language, AI web, semantic web, AI agents"
+  @theme brand=indigo radius=md
+  @og title="SEAL — The Web Language for the AI Era"
+  @og image="/og-image.png"
+
+  Body
+
+    // ── Top Navigation ────────────────────────────────────────────────────────
+    Nav #main-nav sticky=true variant=glass
+      NavBrand #brand href="/" icon=zap "SEAL"
+
+      NavMenu #desktop-menu
+        NavItem href="#features"  "Features"
+        NavItem href="#how-it-works" "How It Works"
+        NavItem href="#testimonials" "Testimonials"
+        NavItem href="#pricing"   "Pricing"
+        NavItem href="/docs"      "Docs"
+
+      Flex gap=sm align=center
+        Button #login-btn  variant=ghost  size=sm href="/login"    "Sign In"
+        Button #signup-btn variant=primary size=sm href="/register" "Get Started Free"
+
+    // ── Hero Section ──────────────────────────────────────────────────────────
+    Section #hero variant=hero padding=2xl
+
+      Badge variant=outline icon=sparkles "Now with AI action protocol v2"
+      Spacer height=md
+
+      Text as=h1 size=6xl weight=extrabold align=center max-width=4xl
+        "The web language built for the "
+        Text as=span color=primary "AI era"
+
+      Text as=p size=xl color=muted align=center max-width=2xl padding-top=md
+        "SEAL makes your web pages instantly understandable for AI agents while rendering beautiful, accessible HTML for humans. Write once. Understood by all."
+
+      Spacer height=xl
+
+      Flex gap=md justify=center
+        Button #hero-cta-primary
+          variant=primary
+          size=xl
+          icon=arrow-right
+          icon-position=right
+          href="/register"
+          "Start Building Free"
+
+        Button #hero-cta-secondary
+          variant=outline
+          size=xl
+          icon=play-circle
+          href="#demo"
+          "Watch Demo"
+
+      Spacer height=xl
+
+      // Code preview card
+      Card #hero-code variant=dark max-width=3xl shadow=2xl
+        CardHeader padding=sm
+          Flex gap=xs
+            Icon name=circle size=sm color=red
+            Icon name=circle size=sm color=yellow
+            Icon name=circle size=sm color=green
+          Text size=xs color=muted padding-left=sm "login.seal"
+        CardBody
+          Text as=pre font=mono size=sm color=light
+            "Page #login title=\"Sign In\" route=\"/login\"
+  Body
+    Section variant=centered
+      Card width=sm
+        Form #login-form validate=true
+          Input #email type=email label=\"Email\" required=true
+          Input #pass  type=password label=\"Password\" required=true
+          Button #submit type=submit variant=primary width=full
+            \"Sign In\""
+
+      Spacer height=md
+      Divider label="AI sees" color=muted
+      Spacer height=md
+
+      Text as=pre font=mono size=xs color=teal
+        "{ actions: [
+  { id:\"email\",  type:\"Input\",  label:\"Email\",    actions:[\"FILL\",\"CLEAR\"] },
+  { id:\"pass\",   type:\"Input\",  label:\"Password\", actions:[\"FILL\",\"CLEAR\"] },
+  { id:\"submit\", type:\"Button\", label:\"Sign In\",  actions:[\"CLICK\"] }
+]}"
+
+    // ── Logos / Social Proof ──────────────────────────────────────────────────
+    Section #logos padding=lg
+      Text as=p size=sm weight=medium color=muted align=center "Trusted by teams at"
+      Flex gap=xl justify=center align=center padding-top=md flex-wrap=true
+        Image src="/logos/acme.svg"     alt="Acme"     height=24 opacity=50
+        Image src="/logos/globex.svg"   alt="Globex"   height=24 opacity=50
+        Image src="/logos/initech.svg"  alt="Initech"  height=24 opacity=50
+        Image src="/logos/umbrella.svg" alt="Umbrella" height=24 opacity=50
+        Image src="/logos/hooli.svg"    alt="Hooli"    height=24 opacity=50
+
+    // ── Features Grid ─────────────────────────────────────────────────────────
+    Section #features padding=2xl
+
+      Text as=h2 size=4xl weight=bold align=center "Everything AI needs. Everything humans love."
+      Text as=p size=lg color=muted align=center max-width=2xl padding-top=sm
+        "SEAL is designed from the ground up for a world where AI agents and humans share the web."
+
+      Spacer height=xl
+
+      Grid cols=3 gap=lg
+        Card #feature-semantic variant=subtle
+          CardBody
+            Icon name=brain size=xl color=primary
+            Text as=h3 size=lg weight=semibold padding-top=md "Semantic by Design"
+            Text as=p color=muted padding-top=sm
+              "Every element carries intent. AI agents read SEAL manifests instead of parsing DOM trees — no CSS selectors, no guessing."
+
+        Card #feature-ai-manifest variant=subtle
+          CardBody
+            Icon name=cpu size=xl color=primary
+            Text as=h3 size=lg weight=semibold padding-top=md "AI Manifest Protocol"
+            Text as=p color=muted padding-top=sm
+              "Pages expose a structured JSON manifest listing every interactive element, its type, label, and permitted actions. Machine-readable from day one."
+
+        Card #feature-html-output variant=subtle
+          CardBody
+            Icon name=code size=xl color=primary
+            Text as=h3 size=lg weight=semibold padding-top=md "Clean HTML Output"
+            Text as=p color=muted padding-top=sm
+              "The SEAL renderer produces semantic, accessible HTML5 — complete with ARIA labels, data-seal-actions attributes, and no extra JavaScript."
+
+        Card #feature-compact variant=subtle
+          CardBody
+            Icon name=minimize size=xl color=primary
+            Text as=h3 size=lg weight=semibold padding-top=md "4× More Compact"
+            Text as=p color=muted padding-top=sm
+              "A login page that takes 120 lines of HTML takes 28 lines of SEAL. Less to write, less to maintain, less to review."
+
+        Card #feature-actions variant=subtle
+          CardBody
+            Icon name=zap size=xl color=primary
+            Text as=h3 size=lg weight=semibold padding-top=md "Built-in Action Verbs"
+            Text as=p color=muted padding-top=sm
+              "FILL, CLICK, SELECT, CHECK, SUBMIT — universal action tokens that any AI agent can understand and execute without training."
+
+        Card #feature-validation variant=subtle
+          CardBody
+            Icon name=shield-check size=xl color=primary
+            Text as=h3 size=lg weight=semibold padding-top=md "Declarative Validation"
+            Text as=p color=muted padding-top=sm
+              "Define constraints once in SEAL. The renderer wires up client validation, server validation hints, and AI-readable constraints automatically."
+
+    // ── How It Works ──────────────────────────────────────────────────────────
+    Section #how-it-works padding=2xl variant=subtle
+
+      Text as=h2 size=4xl weight=bold align=center "How SEAL Works"
+      Text as=p size=lg color=muted align=center max-width=2xl padding-top=sm
+        "A simple three-stage pipeline turns your SEAL source into a page that works for everyone."
+
+      Spacer height=xl
+
+      Grid cols=3 gap=lg
+
+        Card #step-1 variant=outline
+          CardBody align=center
+            Badge variant=primary size=lg "1"
+            Text as=h3 size=lg weight=semibold padding-top=md "Write SEAL"
+            Text as=p color=muted padding-top=sm align=center
+              "Author your page in SEAL's clean, readable syntax. Describe intent, not implementation."
+
+        Card #step-2 variant=outline
+          CardBody align=center
+            Badge variant=primary size=lg "2"
+            Text as=h3 size=lg weight=semibold padding-top=md "Parse → AST"
+            Text as=p color=muted padding-top=sm align=center
+              "The SEAL parser builds an Abstract Syntax Tree that captures structure, semantics, and metadata."
+
+        Card #step-3 variant=outline
+          CardBody align=center
+            Badge variant=primary size=lg "3"
+            Text as=h3 size=lg weight=semibold padding-top=md "Render Targets"
+            Text as=p color=muted padding-top=sm align=center
+              "The renderer outputs HTML for browsers and a JSON manifest for AI agents — from the same source."
+
+    // ── Testimonials ──────────────────────────────────────────────────────────
+    Section #testimonials padding=2xl
+
+      Text as=h2 size=4xl weight=bold align=center "Loved by developers"
+      Spacer height=xl
+
+      Grid cols=3 gap=lg
+
+        Card #testimonial-1
+          CardBody
+            Flex gap=xs
+              Icon name=star size=sm color=yellow
+              Icon name=star size=sm color=yellow
+              Icon name=star size=sm color=yellow
+              Icon name=star size=sm color=yellow
+              Icon name=star size=sm color=yellow
+            Text as=p padding-top=sm
+              "\"SEAL cut our front-end codebase by 60%. More importantly, our AI automation tests went from brittle CSS selectors to readable intent-based commands.\""
+            Flex align=center gap=sm padding-top=md
+              Image src="/avatars/t1.jpg" alt="Sarah J." width=40 height=40 shape=circle
+              Flex direction=col
+                Text size=sm weight=semibold "Sarah Johnson"
+                Text size=xs color=muted "CTO, Acme Inc."
+
+        Card #testimonial-2
+          CardBody
+            Flex gap=xs
+              Icon name=star size=sm color=yellow
+              Icon name=star size=sm color=yellow
+              Icon name=star size=sm color=yellow
+              Icon name=star size=sm color=yellow
+              Icon name=star size=sm color=yellow
+            Text as=p padding-top=sm
+              "\"The AI manifest protocol is a game-changer. Our LLM-powered QA agent can now navigate any SEAL page without any custom tool configuration.\""
+            Flex align=center gap=sm padding-top=md
+              Image src="/avatars/t2.jpg" alt="Marcus L." width=40 height=40 shape=circle
+              Flex direction=col
+                Text size=sm weight-semibold "Marcus Liu"
+                Text size=xs color=muted "Lead Engineer, Globex"
+
+        Card #testimonial-3
+          CardBody
+            Flex gap=xs
+              Icon name=star size=sm color=yellow
+              Icon name=star size=sm color=yellow
+              Icon name=star size=sm color=yellow
+              Icon name=star size=sm color=yellow
+              Icon name=star size=sm color=yellow
+            Text as=p padding-top=sm
+              "\"I rewrote our entire onboarding flow in SEAL in an afternoon. The declarative validation alone saved me two days of debugging.\""
+            Flex align=center gap=sm padding-top=md
+              Image src="/avatars/t3.jpg" alt="Priya N." width=40 height=40 shape=circle
+              Flex direction=col
+                Text size=sm weight=semibold "Priya Nair"
+                Text size=xs color=muted "Indie Developer"
+
+    // ── Pricing ───────────────────────────────────────────────────────────────
+    Section #pricing padding=2xl variant=subtle
+
+      Text as=h2 size=4xl weight=bold align=center "Simple, honest pricing"
+      Text as=p size=lg color=muted align=center padding-top=sm "Start free. Upgrade when you're ready."
+
+      Spacer height=xl
+
+      Grid cols=3 gap=lg max-width=4xl margin=auto
+
+        Card #plan-free
+          CardHeader align=center
+            Text as=h3 size=xl weight=bold "Free"
+            Text as=p size=4xl weight=extrabold padding-top=sm
+              "$0"
+              Text as=span size=sm weight=normal color=muted "/month"
+            Text size=sm color=muted "Perfect for side projects"
+          CardBody
+            List type=check gap=sm
+              Item "Up to 10 SEAL pages"
+              Item "HTML renderer"
+              Item "AI manifest (read-only)"
+              Item "CLI tool"
+              Item "Community support"
+          CardFooter
+            Button #cta-free variant=outline width=full href="/register?plan=free"
+              "Get Started Free"
+
+        Card #plan-pro variant=highlighted
+          CardHeader align=center
+            Badge variant=primary size=sm "Most Popular"
+            Text as=h3 size=xl weight=bold padding-top=xs "Pro"
+            Text as=p size=4xl weight=extrabold padding-top=sm
+              "$29"
+              Text as=span size=sm weight=normal color=muted "/month"
+            Text size=sm color=muted "For professional developers"
+          CardBody
+            List type=check gap=sm
+              Item "Unlimited pages"
+              Item "HTML + AI manifest renderer"
+              Item "Full AI action protocol"
+              Item "Priority CLI builds"
+              Item "Email support"
+              Item "Private projects"
+          CardFooter
+            Button #cta-pro variant=primary width=full href="/register?plan=pro"
+              "Start Pro Trial"
+
+        Card #plan-team
+          CardHeader align=center
+            Text as=h3 size=xl weight=bold "Team"
+            Text as=p size=4xl weight=extrabold padding-top=sm
+              "$79"
+              Text as=span size=sm weight=normal color=muted "/month"
+            Text size=sm color=muted "For collaborative teams"
+          CardBody
+            List type=check gap=sm
+              Item "Everything in Pro"
+              Item "Up to 10 seats"
+              Item "Team dashboard"
+              Item "Shared component library"
+              Item "Priority support"
+              Item "SSO / SAML"
+          CardFooter
+            Button #cta-team variant=outline width=full href="/register?plan=team"
+              "Start Team Trial"
+
+    // ── CTA Banner ────────────────────────────────────────────────────────────
+    Section #cta-banner variant=primary padding=2xl align=center
+      Text as=h2 size=4xl weight=bold color=white "Ready to build for the AI era?"
+      Text as=p size=lg color=white opacity=80 padding-top=sm
+        "Join thousands of developers already building smarter with SEAL."
+      Spacer height=lg
+      Flex gap=md justify=center
+        Button #cta-final variant=white size=xl href="/register"
+          "Get Started Free"
+        Button #cta-docs variant=outline-white size=xl href="/docs"
+          "Read the Docs"
+
+    // ── Footer ────────────────────────────────────────────────────────────────
+    Footer #main-footer padding=xl
+
+      Grid cols=4 gap=xl
+
+        Flex direction=col gap=sm
+          NavBrand href="/" icon=zap "SEAL"
+          Text size=sm color=muted
+            "A markup language designed for the AI era. Build pages that humans love and AI agents understand instantly."
+          Flex gap=sm padding-top=sm
+            Link href="https://github.com/seal-lang" icon=github aria-label="GitHub"
+            Link href="https://twitter.com/seal_lang" icon=twitter aria-label="Twitter"
+            Link href="https://discord.gg/seal" icon=message-circle aria-label="Discord"
+
+        Flex direction=col gap=xs
+          Text size=sm weight=semibold "Product"
+          Link href="/features"  size=sm color=muted "Features"
+          Link href="#pricing"   size=sm color=muted "Pricing"
+          Link href="/changelog" size=sm color=muted "Changelog"
+          Link href="/roadmap"   size=sm color=muted "Roadmap"
+
+        Flex direction=col gap=xs
+          Text size=sm weight=semibold "Developers"
+          Link href="/docs"           size=sm color=muted "Documentation"
+          Link href="/docs/spec"      size=sm color=muted "Language Spec"
+          Link href="/docs/cli"       size=sm color=muted "CLI Reference"
+          Link href="/docs/ai-protocol" size=sm color=muted "AI Protocol"
+          Link href="/examples"       size=sm color=muted "Examples"
+
+        Flex direction=col gap=xs
+          Text size=sm weight=semibold "Company"
+          Link href="/about"   size=sm color=muted "About"
+          Link href="/blog"    size=sm color=muted "Blog"
+          Link href="/careers" size=sm color=muted "Careers"
+          Link href="/contact" size=sm color=muted "Contact"
+          Link href="/privacy" size=sm color=muted "Privacy"
+          Link href="/terms"   size=sm color=muted "Terms"
+
+      Divider margin-top=xl
+
+      Flex justify=between align=center padding-top=md
+        Text size=sm color=muted "© 2026 SEAL Language. All rights reserved."
+        Text size=sm color=muted "Made with SEAL"

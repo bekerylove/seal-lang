@@ -1,0 +1,65 @@
+// Login page example
+// Demonstrates: form controls, validation hints, branding, centered layout
+
+Page #login-page title="Sign In" route="/login"
+  @meta description="Sign in to your account"
+  @meta keywords="login, sign in, authentication"
+  @theme brand=indigo radius=md
+  @viewport width=device-width initial-scale=1
+
+  Body
+    Section #login-section variant=centered padding=xl
+
+      Card #login-card width=sm shadow=lg
+        CardHeader
+          Image #brand-logo src="/logo.svg" alt="Company Logo" width=48 height=48
+          Text as=h1 size=2xl weight=bold align=center "Welcome back"
+          Text as=p size=sm color=muted align=center "Sign in to continue to your account"
+
+        CardBody
+          Form #login-form action="/auth/login" method=POST validate=true
+
+            Input #email
+              label="Email address"
+              type=email
+              placeholder="you@example.com"
+              required=true
+              autocomplete=email
+              hint="Enter the email you registered with"
+
+            Input #password
+              label="Password"
+              type=password
+              placeholder="••••••••"
+              required=true
+              autocomplete=current-password
+              minlength=8
+
+            Flex justify=between align=center
+              Checkbox #remember-me label="Remember me" default=false
+              Link #forgot-password href="/auth/forgot-password" size=sm "Forgot password?"
+
+            Button #submit
+              type=submit
+              variant=primary
+              size=lg
+              width=full
+              "Sign In"
+
+            Divider label="or"
+
+            Button #google-login
+              variant=outline
+              size=lg
+              width=full
+              icon=google
+              "Continue with Google"
+
+        CardFooter align=center
+          Text size=sm color=muted
+            "Don't have an account? "
+            Link #signup-link href="/register" "Create one for free"
+
+    // Background decoration
+    Section #bg-decoration aria-hidden=true
+      Spacer

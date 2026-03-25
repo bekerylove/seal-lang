@@ -1,0 +1,187 @@
+// Dashboard example
+// Demonstrates: sidebar nav, stats cards, data table, action buttons, badges
+
+Page #dashboard title="Dashboard" route="/dashboard"
+  @meta description="Application dashboard overview"
+  @theme brand=violet radius=md
+  @auth required=true redirect="/login"
+
+  Body layout=sidebar
+
+    // ── Left Sidebar ────────────────────────────────────────────────────────────
+    Aside #sidebar width=64 collapsible=true
+
+      NavBrand #brand href="/" icon=zap "Acme Corp"
+
+      Nav #main-nav label="Main navigation"
+        NavItem #nav-home   href="/"           icon=home    active=true  "Dashboard"
+        NavItem #nav-users  href="/users"       icon=users               "Users"
+        NavItem #nav-orders href="/orders"      icon=package             "Orders"
+        NavItem #nav-products href="/products"  icon=box                 "Products"
+        NavItem #nav-analytics href="/analytics" icon=bar-chart          "Analytics"
+        NavItem #nav-settings href="/settings"  icon=settings            "Settings"
+
+      Divider
+
+      Nav #secondary-nav label="Account"
+        NavItem #nav-profile href="/profile"    icon=user                "Profile"
+        NavItem #nav-billing href="/billing"    icon=credit-card         "Billing"
+        NavItem #nav-logout  href="/auth/logout" icon=log-out            "Sign out"
+
+    // ── Main Content ────────────────────────────────────────────────────────────
+    Main #main-content
+
+      Header #page-header
+        Flex justify=between align=center padding=md
+          Text as=h1 size=2xl weight=semibold "Overview"
+          Flex gap=sm
+            Button #export-btn variant=outline size=sm icon=download "Export"
+            Button #new-order-btn variant=primary size=sm icon=plus "New Order"
+
+      // ── Stats Grid ────────────────────────────────────────────────────────────
+      Section #stats-section padding=md
+        Grid cols=4 gap=md
+
+          Card #stat-users
+            CardHeader
+              Flex justify=between align=start
+                Text size=sm weight=medium color=muted "Total Users"
+                Icon name=users size=sm color=muted
+            CardBody
+              Text as=p size=3xl weight=bold "24,521"
+              Flex align=center gap=xs
+                Badge variant=success icon=trending-up "+12.5%"
+                Text size=xs color=muted "vs last month"
+
+          Card #stat-revenue
+            CardHeader
+              Flex justify=between align=start
+                Text size=sm weight=medium color=muted "Monthly Revenue"
+                Icon name=dollar-sign size=sm color=muted
+            CardBody
+              Text as=p size=3xl weight=bold "$48,295"
+              Flex align=center gap=xs
+                Badge variant=success icon=trending-up "+8.2%"
+                Text size=xs color=muted "vs last month"
+
+          Card #stat-orders
+            CardHeader
+              Flex justify=between align=start
+                Text size=sm weight=medium color=muted "New Orders"
+                Icon name=package size=sm color=muted
+            CardBody
+              Text as=p size=3xl weight=bold "1,893"
+              Flex align=center gap=xs
+                Badge variant=warning icon=minus "+0.4%"
+                Text size=xs color=muted "vs last month"
+
+          Card #stat-growth
+            CardHeader
+              Flex justify=between align=start
+                Text size=sm weight=medium color=muted "Growth Rate"
+                Icon name=trending-up size=sm color=muted
+            CardBody
+              Text as=p size=3xl weight=bold "18.7%"
+              Flex align=center gap=xs
+                Badge variant=success icon=trending-up "+2.1%"
+                Text size=xs color=muted "vs last month"
+
+      // ── Recent Orders Table ───────────────────────────────────────────────────
+      Section #orders-section padding=md
+
+        Card
+          CardHeader
+            Flex justify=between align=center
+              Text as=h2 size=lg weight=semibold "Recent Orders"
+              Flex gap=sm
+                Input #order-search
+                  type=search
+                  placeholder="Search orders..."
+                  size=sm
+                  width=xs
+                Button #filter-btn variant=outline size=sm icon=filter "Filter"
+
+          CardBody padding=none
+
+            Table #orders-table striped=true hoverable=true
+              Columns
+                Column field=id      label="Order ID"  sortable=true  width=xs
+                Column field=customer label="Customer" sortable=true
+                Column field=product  label="Product"  sortable=false
+                Column field=amount   label="Amount"   sortable=true  align=right
+                Column field=status   label="Status"   sortable=true  align=center
+                Column field=date     label="Date"     sortable=true
+                Column field=actions  label=""         sortable=false align=right
+
+              Rows
+                Row #order-1001 data-id="1001"
+                  Cell "#1001"
+                  Cell "Sarah Johnson"
+                  Cell "Pro Subscription"
+                  Cell "$29.00"
+                  Cell
+                    Badge variant=success "Paid"
+                  Cell "Mar 22, 2026"
+                  Cell
+                    Flex gap=xs justify=end
+                      Button variant=ghost size=xs icon=eye   "View"
+                      Button variant=ghost size=xs icon=edit  "Edit"
+
+                Row #order-1002 data-id="1002"
+                  Cell "#1002"
+                  Cell "Michael Chen"
+                  Cell "Enterprise Plan"
+                  Cell "$199.00"
+                  Cell
+                    Badge variant=warning "Pending"
+                  Cell "Mar 21, 2026"
+                  Cell
+                    Flex gap=xs justify=end
+                      Button variant=ghost size=xs icon=eye   "View"
+                      Button variant=ghost size=xs icon=edit  "Edit"
+
+                Row #order-1003 data-id="1003"
+                  Cell "#1003"
+                  Cell "Aisha Patel"
+                  Cell "Starter Pack"
+                  Cell "$9.00"
+                  Cell
+                    Badge variant=danger "Failed"
+                  Cell "Mar 21, 2026"
+                  Cell
+                    Flex gap=xs justify=end
+                      Button variant=ghost size=xs icon=eye      "View"
+                      Button variant=ghost size=xs icon=refresh  "Retry"
+
+                Row #order-1004 data-id="1004"
+                  Cell "#1004"
+                  Cell "Tom Eriksson"
+                  Cell "Pro Subscription"
+                  Cell "$29.00"
+                  Cell
+                    Badge variant=success "Paid"
+                  Cell "Mar 20, 2026"
+                  Cell
+                    Flex gap=xs justify=end
+                      Button variant=ghost size=xs icon=eye   "View"
+                      Button variant=ghost size=xs icon=edit  "Edit"
+
+                Row #order-1005 data-id="1005"
+                  Cell "#1005"
+                  Cell "Priya Nair"
+                  Cell "Team Bundle"
+                  Cell "$79.00"
+                  Cell
+                    Badge variant=info "Processing"
+                  Cell "Mar 20, 2026"
+                  Cell
+                    Flex gap=xs justify=end
+                      Button variant=ghost size=xs icon=eye   "View"
+                      Button variant=ghost size=xs icon=edit  "Edit"
+
+          CardFooter
+            Flex justify=between align=center
+              Text size=sm color=muted "Showing 5 of 1,893 orders"
+              Flex gap=xs
+                Button #prev-page variant=outline size=sm icon=chevron-left disabled=true "Previous"
+                Button #next-page variant=outline size=sm icon=chevron-right "Next"

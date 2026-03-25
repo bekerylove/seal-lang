@@ -1,0 +1,220 @@
+// ============================================================================
+// AI Agent Example: Filling a Complex Registration Form
+// ============================================================================
+//
+// Demonstrates: SEQUENCE command for atomic multi-step fills, Select handling,
+// Checkbox toggling, Radio selection, file upload, and form submission with
+// validation error recovery.
+// ============================================================================
+
+
+// ── Step 1: Discover the page ────────────────────────────────────────────────
+
+READ PAGE
+
+// Expected response (abbreviated — only interactive elements):
+// {
+//   "page": { "id": "registration-page", "title": "Create Account", "route": "/register" },
+//   "actions": [
+//     { "id": "first-name",     "type": "Input",    "label": "First name",        "required": true,  "actions": ["FILL","CLEAR","FOCUS","BLUR","READ"] },
+//     { "id": "last-name",      "type": "Input",    "label": "Last name",         "required": true,  "actions": ["FILL","CLEAR","FOCUS","BLUR","READ"] },
+//     { "id": "email",          "type": "Input",    "label": "Email address",     "required": true,  "actions": ["FILL","CLEAR","FOCUS","BLUR","READ"] },
+//     { "id": "phone",          "type": "Input",    "label": "Phone number",      "required": false, "actions": ["FILL","CLEAR","FOCUS","BLUR","READ"] },
+//     { "id": "birthday",       "type": "Input",    "label": "Date of birth",     "required": false, "actions": ["FILL","CLEAR","FOCUS","BLUR","READ"] },
+//     { "id": "gender",         "type": "Select",   "label": "Gender",            "required": false, "actions": ["SELECT","FOCUS","BLUR","READ"] },
+//     { "id": "username",       "type": "Input",    "label": "Username",          "required": true,  "actions": ["FILL","CLEAR","FOCUS","BLUR","READ"] },
+//     { "id": "password",       "type": "Input",    "label": "Password",          "required": true,  "actions": ["FILL","CLEAR","FOCUS","BLUR","READ"] },
+//     { "id": "password-confirm","type":"Input",    "label": "Confirm password",  "required": true,  "actions": ["FILL","CLEAR","FOCUS","BLUR","READ"] },
+//     { "id": "address-line1",  "type": "Input",    "label": "Street address",    "required": true,  "actions": ["FILL","CLEAR","FOCUS","BLUR","READ"] },
+//     { "id": "address-line2",  "type": "Input",    "label": "Apartment, suite, etc.", "required": false, "actions": ["FILL","CLEAR","FOCUS","BLUR","READ"] },
+//     { "id": "city",           "type": "Input",    "label": "City",              "required": true,  "actions": ["FILL","CLEAR","FOCUS","BLUR","READ"] },
+//     { "id": "state",          "type": "Select",   "label": "State / Province",  "required": true,  "actions": ["SELECT","FOCUS","BLUR","READ"] },
+//     { "id": "postal-code",    "type": "Input",    "label": "ZIP / Postal code", "required": true,  "actions": ["FILL","CLEAR","FOCUS","BLUR","READ"] },
+//     { "id": "country",        "type": "Select",   "label": "Country",           "required": true,  "actions": ["SELECT","FOCUS","BLUR","READ"] },
+//     { "id": "role-developer", "type": "Radio",    "label": "Developer",         "name": "role",    "actions": ["SELECT","READ"] },
+//     { "id": "role-designer",  "type": "Radio",    "label": "Designer",          "name": "role",    "actions": ["SELECT","READ"] },
+//     { "id": "role-manager",   "type": "Radio",    "label": "Product Manager",   "name": "role",    "actions": ["SELECT","READ"] },
+//     { "id": "role-other",     "type": "Radio",    "label": "Other",             "name": "role",    "actions": ["SELECT","READ"] },
+//     { "id": "plan",           "type": "Select",   "label": "Plan",              "required": true,  "actions": ["SELECT","FOCUS","BLUR","READ"] },
+//     { "id": "notify-updates", "type": "Checkbox", "label": "Product updates",   "checked": true,   "actions": ["CHECK","UNCHECK","TOGGLE","READ"] },
+//     { "id": "notify-tips",    "type": "Checkbox", "label": "Tips and tutorials","checked": true,   "actions": ["CHECK","UNCHECK","TOGGLE","READ"] },
+//     { "id": "notify-billing", "type": "Checkbox", "label": "Billing and invoices","checked": true, "actions": ["CHECK","UNCHECK","TOGGLE","READ"] },
+//     { "id": "notify-marketing","type":"Checkbox", "label": "Promotional emails","checked": false,  "actions": ["CHECK","UNCHECK","TOGGLE","READ"] },
+//     { "id": "avatar-upload",  "type": "Input",    "label": "Upload photo",      "inputType": "file","actions": ["FILL","READ"] },
+//     { "id": "terms-agree",    "type": "Checkbox", "label": "Terms of Service",  "required": true,  "actions": ["CHECK","UNCHECK","TOGGLE","READ"] },
+//     { "id": "age-confirm",    "type": "Checkbox", "label": "Age confirmation",  "required": true,  "actions": ["CHECK","UNCHECK","TOGGLE","READ"] },
+//     { "id": "submit-btn",     "type": "Button",   "label": "Create Account",    "buttonType": "submit", "actions": ["CLICK","FOCUS","BLUR"] }
+//   ]
+// }
+
+
+// ── Step 2: Fill all personal information using SEQUENCE ──────────────────────
+//
+// SEQUENCE executes each command atomically in order.
+// If any step fails, the whole sequence is aborted and an error is returned.
+
+SEQUENCE
+  FILL #first-name     WITH "Jane"
+  FILL #last-name      WITH "Smith"
+  FILL #email          WITH "jane.smith@example.com"
+  FILL #phone          WITH "+1 (415) 555-0182"
+  FILL #birthday       WITH "1992-07-15"
+  SELECT #gender       WITH "female"
+END SEQUENCE
+
+// Expected response:
+// {
+//   "sequence": "ok",
+//   "steps": [
+//     { "id": "first-name",  "action": "FILL",   "status": "ok" },
+//     { "id": "last-name",   "action": "FILL",   "status": "ok" },
+//     { "id": "email",       "action": "FILL",   "status": "ok" },
+//     { "id": "phone",       "action": "FILL",   "status": "ok" },
+//     { "id": "birthday",    "action": "FILL",   "status": "ok" },
+//     { "id": "gender",      "action": "SELECT", "status": "ok", "value": "female" }
+//   ]
+// }
+
+
+// ── Step 3: Fill account credentials ─────────────────────────────────────────
+
+SEQUENCE
+  FILL #username         WITH "jane_smith_92"
+  FILL #password         WITH "Tr0ub4dor&3Correct"
+  FILL #password-confirm WITH "Tr0ub4dor&3Correct"
+END SEQUENCE
+
+// Expected response:
+// { "sequence": "ok", "steps": [ ... all ok ... ] }
+
+
+// ── Step 4: Fill address fields ───────────────────────────────────────────────
+
+SEQUENCE
+  FILL   #address-line1 WITH "742 Evergreen Terrace"
+  FILL   #address-line2 WITH "Apt 2B"
+  FILL   #city          WITH "Springfield"
+  SELECT #state         WITH "CA"
+  FILL   #postal-code   WITH "90210"
+  SELECT #country       WITH "US"
+END SEQUENCE
+
+// Expected response:
+// { "sequence": "ok", "steps": [ ... all ok ... ] }
+
+
+// ── Step 5: Select role (radio button) ───────────────────────────────────────
+
+SELECT #role-developer
+
+// Expected response:
+// { "id": "role-developer", "action": "SELECT", "status": "ok", "name": "role", "value": "developer" }
+
+
+// ── Step 6: Select plan ───────────────────────────────────────────────────────
+
+SELECT #plan WITH "pro"
+
+// Expected response:
+// { "id": "plan", "action": "SELECT", "status": "ok", "value": "pro", "label": "Pro — $29/month" }
+
+
+// ── Step 7: Configure notification preferences ────────────────────────────────
+
+// These are already checked by default; opt into marketing too:
+CHECK #notify-marketing
+
+// Expected response:
+// { "id": "notify-marketing", "action": "CHECK", "status": "ok", "checked": true }
+
+// Unsubscribe from tips:
+UNCHECK #notify-tips
+
+// Expected response:
+// { "id": "notify-tips", "action": "UNCHECK", "status": "ok", "checked": false }
+
+
+// ── Step 8: Upload a profile photo ────────────────────────────────────────────
+
+FILL #avatar-upload WITH "/path/to/profile-photo.jpg"
+
+// Expected response:
+// {
+//   "id": "avatar-upload",
+//   "action": "FILL",
+//   "status": "ok",
+//   "file": {
+//     "name": "profile-photo.jpg",
+//     "size": 204800,
+//     "type": "image/jpeg",
+//     "previewUpdated": true
+//   }
+// }
+
+
+// ── Step 9: Accept terms ──────────────────────────────────────────────────────
+
+SEQUENCE
+  CHECK #terms-agree
+  CHECK #age-confirm
+END SEQUENCE
+
+// Expected response:
+// {
+//   "sequence": "ok",
+//   "steps": [
+//     { "id": "terms-agree", "action": "CHECK", "status": "ok", "checked": true },
+//     { "id": "age-confirm", "action": "CHECK", "status": "ok", "checked": true }
+//   ]
+// }
+
+
+// ── Step 10: Validate before submitting ──────────────────────────────────────
+
+VALIDATE #registration-form
+
+// Expected response (all valid):
+// { "id": "registration-form", "action": "VALIDATE", "status": "ok", "errors": [] }
+
+// Example response with errors:
+// {
+//   "id": "registration-form",
+//   "action": "VALIDATE",
+//   "status": "error",
+//   "errors": [
+//     { "id": "username",    "message": "Username already taken." },
+//     { "id": "postal-code", "message": "Must be a valid US ZIP code." }
+//   ]
+// }
+
+
+// ── Step 11: Fix a validation error and resubmit ─────────────────────────────
+
+CLEAR #username
+FILL  #username WITH "jane_smith_1992"
+
+CLEAR #postal-code
+FILL  #postal-code WITH "94103"
+
+VALIDATE #registration-form
+
+// Expected: { "status": "ok", "errors": [] }
+
+
+// ── Step 12: Submit ───────────────────────────────────────────────────────────
+
+CLICK #submit-btn
+WAIT FOR navigation TIMEOUT 10000
+
+// Success:
+// { "event": "navigation", "status": "ok", "url": "/welcome" }
+
+// Server-side error:
+// {
+//   "event": "navigation",
+//   "status": "blocked",
+//   "url": "/register",
+//   "errors": [
+//     { "id": "email", "message": "An account with this email already exists." }
+//   ]
+// }

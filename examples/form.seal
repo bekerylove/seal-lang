@@ -1,0 +1,288 @@
+// Complex registration form example
+// Demonstrates: multi-section form, all input types, file upload, validation,
+//               select dropdowns, checkbox groups, radio groups, conditional fields
+
+Page #registration-page title="Create Account" route="/register"
+  @meta description="Create a new account to get started"
+  @theme brand=teal radius=md
+  @progress step=1 total=1 label="Registration"
+
+  Body
+    Section variant=centered padding=xl
+
+      Card #registration-card width=lg shadow=md
+        CardHeader
+          Text as=h1 size=2xl weight=bold "Create Your Account"
+          Text as=p size=sm color=muted "Fill out the form below to get started. All fields marked * are required."
+
+        CardBody
+          Form #registration-form
+            action="/api/register"
+            method=POST
+            enctype=multipart/form-data
+            validate=true
+            on-success="/welcome"
+            on-error="#registration-error
+
+            // ── Error banner ────────────────────────────────────────────────────
+            Alert #registration-error variant=danger hidden=true
+              "Please fix the errors below before continuing."
+
+            // ── Section 1: Personal Information ─────────────────────────────────
+            Section #section-personal
+              Text as=h2 size=lg weight=semibold border-bottom=true padding-bottom=sm "Personal Information"
+              Spacer height=sm
+
+              Grid cols=2 gap=md
+                Input #first-name
+                  label="First name *"
+                  type=text
+                  placeholder="Jane"
+                  required=true
+                  autocomplete=given-name
+                  minlength=2
+                  maxlength=50
+
+                Input #last-name
+                  label="Last name *"
+                  type=text
+                  placeholder="Smith"
+                  required=true
+                  autocomplete=family-name
+                  minlength=2
+                  maxlength=50
+
+              Input #email
+                label="Email address *"
+                type=email
+                placeholder="jane@example.com"
+                required=true
+                autocomplete=email
+                hint="We'll send a confirmation link to this address"
+
+              Grid cols=2 gap=md
+                Input #phone
+                  label="Phone number"
+                  type=tel
+                  placeholder="+1 (555) 000-0000"
+                  autocomplete=tel
+                  pattern="^\+?[\d\s\-().]{7,20}$"
+                  hint="Optional, used for 2FA"
+
+                Input #birthday
+                  label="Date of birth"
+                  type=date
+                  autocomplete=bday
+                  hint="Must be 18 or older to register"
+
+              Select #gender
+                label="Gender"
+                placeholder="Prefer not to say"
+                Option value=""          "Prefer not to say"
+                Option value="female"   "Female"
+                Option value="male"     "Male"
+                Option value="nonbinary" "Non-binary"
+                Option value="other"    "Other"
+
+            Spacer height=lg
+
+            // ── Section 2: Account Credentials ──────────────────────────────────
+            Section #section-credentials
+              Text as=h2 size=lg weight=semibold border-bottom=true padding-bottom=sm "Account Credentials"
+              Spacer height=sm
+
+              Input #username
+                label="Username *"
+                type=text
+                placeholder="jane_smith"
+                required=true
+                minlength=3
+                maxlength=30
+                pattern="^[a-zA-Z0-9_]+$"
+                hint="3–30 characters, letters, numbers, and underscores only"
+
+              Grid cols=2 gap=md
+                Input #password
+                  label="Password *"
+                  type=password
+                  required=true
+                  minlength=8
+                  strength-meter=true
+                  hint="At least 8 characters, mix of letters, numbers & symbols"
+
+                Input #password-confirm
+                  label="Confirm password *"
+                  type=password
+                  required=true
+                  match=#password
+                  hint="Must match the password above"
+
+            Spacer height=lg
+
+            // ── Section 3: Address ───────────────────────────────────────────────
+            Section #section-address
+              Text as=h2 size=lg weight=semibold border-bottom=true padding-bottom=sm "Address"
+              Spacer height=sm
+
+              Input #address-line1
+                label="Street address *"
+                type=text
+                placeholder="123 Main St"
+                required=true
+                autocomplete=street-address
+                maxlength=100
+
+              Input #address-line2
+                label="Apartment, suite, etc."
+                type=text
+                placeholder="Apt 4B"
+                autocomplete=address-line2
+                maxlength=100
+
+              Grid cols=3 gap=md
+                Input #city
+                  label="City *"
+                  type=text
+                  placeholder="San Francisco"
+                  required=true
+                  autocomplete=address-level2
+
+                Select #state
+                  label="State / Province *"
+                  required=true
+                  autocomplete=address-level1
+                  Option value=""   "Select..."
+                  Option value="CA" "California"
+                  Option value="NY" "New York"
+                  Option value="TX" "Texas"
+                  Option value="FL" "Florida"
+                  Option value="WA" "Washington"
+                  Option value="other" "Other"
+
+                Input #postal-code
+                  label="ZIP / Postal code *"
+                  type=text
+                  placeholder="94105"
+                  required=true
+                  autocomplete=postal-code
+                  maxlength=10
+
+              Select #country
+                label="Country *"
+                required=true
+                autocomplete=country
+                Option value=""    "Select country..."
+                Option value="US" selected=true "United States"
+                Option value="CA" "Canada"
+                Option value="GB" "United Kingdom"
+                Option value="AU" "Australia"
+                Option value="DE" "Germany"
+                Option value="FR" "France"
+                Option value="JP" "Japan"
+                Option value="other" "Other"
+
+            Spacer height=lg
+
+            // ── Section 4: Preferences ───────────────────────────────────────────
+            Section #section-preferences
+              Text as=h2 size=lg weight=semibold border-bottom=true padding-bottom=sm "Preferences"
+              Spacer height=sm
+
+              // Role selection (radio group)
+              Text as=label size=sm weight=medium "I am primarily a... *"
+              Flex direction=col gap=xs padding-top=xs
+                Radio #role-developer name=role value=developer
+                  label="Developer — I build apps with SEAL"
+                Radio #role-designer name=role value=designer
+                  label="Designer — I design interfaces using SEAL"
+                Radio #role-manager name=role value=manager
+                  label="Product Manager — I oversee projects using SEAL"
+                Radio #role-other name=role value=other
+                  label="Other"
+
+              Spacer height=md
+
+              // Plan selection
+              Select #plan
+                label="Plan *"
+                required=true
+                Option value="free" selected=true "Free — $0/month"
+                Option value="pro"               "Pro — $29/month"
+                Option value="team"              "Team — $79/month"
+                Option value="enterprise"        "Enterprise — Contact us"
+
+              Spacer height=md
+
+              // Email notification preferences (checkboxes)
+              Text as=label size=sm weight=medium "Email notifications"
+              Flex direction=col gap=xs padding-top=xs
+                Checkbox #notify-updates   name=notifications value=updates   default=true
+                  label="Product updates and new features"
+                Checkbox #notify-tips      name=notifications value=tips      default=true
+                  label="Tips and tutorials"
+                Checkbox #notify-billing   name=notifications value=billing   default=true
+                  label="Billing and invoices"
+                Checkbox #notify-marketing name=notifications value=marketing default=false
+                  label="Promotional emails and offers"
+
+            Spacer height=lg
+
+            // ── Section 5: Profile Photo ─────────────────────────────────────────
+            Section #section-photo
+              Text as=h2 size=lg weight=semibold border-bottom=true padding-bottom=sm "Profile Photo"
+              Spacer height=sm
+
+              Flex align=center gap=md
+                Image #avatar-preview
+                  src="/default-avatar.png"
+                  alt="Profile photo preview"
+                  width=80
+                  height=80
+                  shape=circle
+                  border=true
+
+                Flex direction=col gap=xs flex=1
+                  Input #avatar-upload
+                    label="Upload photo"
+                    type=file
+                    accept="image/jpeg,image/png,image/webp"
+                    max-size=5242880
+                    hint="JPG, PNG or WebP. Max 5 MB."
+                    preview=#avatar-preview
+
+            Spacer height=lg
+
+            // ── Section 6: Terms ─────────────────────────────────────────────────
+            Section #section-terms
+              Checkbox #terms-agree
+                required=true
+                name=terms
+                value=agreed
+                label-html="I agree to the <a href='/terms'>Terms of Service</a> and <a href='/privacy'>Privacy Policy</a> *"
+
+              Checkbox #age-confirm
+                required=true
+                name=age
+                value=confirmed
+                label="I confirm that I am 18 years of age or older *"
+
+            Spacer height=lg
+
+            // ── Submit ────────────────────────────────────────────────────────────
+            Flex justify=between align=center
+              Link href="/login" size=sm color=muted "Already have an account? Sign in"
+              Button #submit-btn
+                type=submit
+                variant=primary
+                size=lg
+                icon=user-plus
+                loading-text="Creating account..."
+                "Create Account"
+
+        CardFooter align=center
+          Text size=xs color=muted
+            "By registering you agree to our "
+            Link href="/terms" "Terms of Service"
+            " and "
+            Link href="/privacy" "Privacy Policy"
+            "."

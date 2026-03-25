@@ -1,0 +1,195 @@
+// AI Chat interface example
+// Demonstrates: chat layout, message list, input area, model selector, sidebar history
+
+Page #chat-page title="SEAL Assistant" route="/chat"
+  @meta description="AI-powered chat interface"
+  @theme brand=indigo radius=lg
+  @layout fullscreen=true
+
+  Body layout=sidebar
+
+    // ── Left Sidebar: Conversation History ──────────────────────────────────────
+    Aside #chat-sidebar width=64 collapsible=true
+
+      Flex direction=col height=full
+
+        // New chat button
+        Button #new-chat-btn
+          variant=outline
+          size=sm
+          width=full
+          icon=plus
+          "New Chat"
+
+        Divider margin=sm
+
+        // Model selector
+        Select #model-selector label="Model" size=sm
+          Option value="seal-1"          selected=true  "SEAL 1 (Latest)"
+          Option value="seal-1-mini"                    "SEAL 1 Mini"
+          Option value="seal-1-pro"                     "SEAL 1 Pro"
+          Option value="seal-preview"                   "SEAL Preview"
+
+        Divider margin=sm
+
+        // Conversation history list
+        Nav #conversation-list label="Chat history" scrollable=true flex=1
+
+          Text as=p size=xs weight=medium color=muted padding=xs "Today"
+          NavItem #chat-active href="/chat/c1" active=true
+            Text truncate=true "How does SEAL handle forms?"
+          NavItem #chat-h2 href="/chat/c2"
+            Text truncate=true "Build a login page example"
+          NavItem #chat-h3 href="/chat/c3"
+            Text truncate=true "Difference between SEAL and HTML"
+
+          Text as=p size=xs weight=medium color=muted padding=xs "Yesterday"
+          NavItem #chat-h4 href="/chat/c4"
+            Text truncate=true "Dashboard layout patterns"
+          NavItem #chat-h5 href="/chat/c5"
+            Text truncate=true "SEAL AI action protocol"
+          NavItem #chat-h6 href="/chat/c6"
+            Text truncate=true "Pricing page components"
+
+          Text as=p size=xs weight=medium color=muted padding=xs "Last 7 days"
+          NavItem #chat-h7 href="/chat/c7"
+            Text truncate=true "Responsive grid system"
+          NavItem #chat-h8 href="/chat/c8"
+            Text truncate=true "Authentication patterns"
+
+        Divider margin=sm
+
+        // Sidebar footer
+        Flex align=center gap=sm padding=sm
+          Image #avatar src="/avatar.png" alt="User" width=32 height=32 shape=circle
+          Flex direction=col flex=1
+            Text size=sm weight=medium "Alex P."
+            Text size=xs color=muted "Free plan"
+          Button #sidebar-settings variant=ghost size=xs icon=settings aria-label="Settings"
+
+    // ── Main Chat Area ───────────────────────────────────────────────────────────
+    Main #chat-main layout=chat
+
+      // Chat header
+      Header #chat-header
+        Flex justify=between align=center padding=sm
+          Flex align=center gap=sm
+            Text as=h2 size=base weight=semibold "How does SEAL handle forms?"
+            Badge variant=outline size=xs "SEAL 1"
+          Flex gap=xs
+            Button #share-btn    variant=ghost size=sm icon=share-2 aria-label="Share"
+            Button #bookmark-btn variant=ghost size=sm icon=bookmark aria-label="Save"
+            Button #more-btn     variant=ghost size=sm icon=more-horizontal aria-label="More options"
+
+      // ── Message List ─────────────────────────────────────────────────────────
+      Section #message-list scrollable=true flex=1 padding=md
+
+        // User message 1
+        Article #msg-1 role=user
+          Flex justify=end
+            Card variant=filled color=primary max-width=prose
+              CardBody padding=sm
+                Text "How does SEAL handle forms compared to regular HTML?"
+              CardFooter padding=xs
+                Text size=xs color=muted align=right "2:14 PM"
+
+        // Assistant message 1
+        Article #msg-2 role=assistant
+          Flex gap=sm align=start
+            Image src="/seal-avatar.png" alt="SEAL Assistant" width=32 height=32 shape=circle
+            Flex direction=col flex=1
+
+              Card variant=subtle max-width=prose
+                CardBody padding=sm
+                  Text as=p "SEAL forms are dramatically simpler for both humans and AI agents."
+                  Text as=p margin-top=sm "In SEAL, you write:"
+                  Card variant=code
+                    CardBody padding=sm
+                      Text as=pre font=mono size=sm
+                        "Form #signup action=\"/register\" method=POST
+  Input #email type=email label=\"Email\" required=true
+  Input #pass  type=password label=\"Password\" required=true
+  Button #submit type=submit \"Create Account\""
+
+                  Text as=p margin-top=sm "The SEAL renderer automatically:"
+                  List type=bullet
+                    Item "Generates semantic HTML with correct ARIA roles"
+                    Item "Adds data-seal-actions attributes for AI discovery"
+                    Item "Wires up client-side validation"
+                    Item "Produces a structured AI manifest for automation"
+                CardFooter padding=xs
+                  Flex justify=between align=center
+                    Text size=xs color=muted "2:14 PM"
+                    Flex gap=xs
+                      Button variant=ghost size=xs icon=thumbs-up  aria-label="Good response"
+                      Button variant=ghost size=xs icon=thumbs-down aria-label="Bad response"
+                      Button variant=ghost size=xs icon=copy       aria-label="Copy"
+
+        // User message 2
+        Article #msg-3 role=user
+          Flex justify=end
+            Card variant=filled color=primary max-width=prose
+              CardBody padding=sm
+                Text "Can you show the AI manifest output for that form?"
+              CardFooter padding=xs
+                Text size=xs color=muted align=right "2:15 PM"
+
+        // Assistant message 2 (streaming / in progress)
+        Article #msg-4 role=assistant data-state=streaming
+          Flex gap=sm align=start
+            Image src="/seal-avatar.png" alt="SEAL Assistant" width=32 height=32 shape=circle
+            Card variant=subtle max-width=prose
+              CardBody padding=sm
+                Text as=p "Here's the AI manifest generated from that SEAL form:"
+                Card variant=code
+                  CardBody padding=sm
+                    Text as=pre font=mono size=sm
+                      "{ \"id\": \"signup\", \"type\": \"Form\",
+  \"actions\": [\"SUBMIT\", \"RESET\", \"VALIDATE\"],
+  \"children\": [
+    { \"id\": \"email\", \"type\": \"Input\",
+      \"label\": \"Email\",
+      \"actions\": [\"FILL\", \"CLEAR\", \"READ\"] },
+    { \"id\": \"pass\", \"type\": \"Input\",
+      \"label\": \"Password\",
+      \"actions\": [\"FILL\", \"CLEAR\", \"READ\"] },
+    { \"id\": \"submit\", \"type\": \"Button\",
+      \"label\": \"Create Account\",
+      \"actions\": [\"CLICK\"] }
+  ]
+}"
+                Spinner size=xs color=muted margin-left=xs
+
+      // ── Input Area ────────────────────────────────────────────────────────────
+      Section #input-area padding=md border-top=true
+
+        Form #chat-form action="javascript:void(0)"
+          Flex direction=col gap=sm
+
+            Card variant=outline focus-within=highlight
+              CardBody padding=sm
+                Textarea #message-input
+                  placeholder="Ask anything about SEAL..."
+                  rows=1
+                  autosize=true
+                  maxrows=8
+                  required=true
+
+                Flex justify=between align=center padding-top=xs
+                  Flex gap=xs
+                    Button #attach-btn  variant=ghost size=sm icon=paperclip aria-label="Attach file"
+                    Button #image-btn   variant=ghost size=sm icon=image     aria-label="Add image"
+                    Button #code-btn    variant=ghost size=sm icon=code      aria-label="Insert code"
+                  Flex gap=xs align=center
+                    Text #char-counter size=xs color=muted "0 / 4096"
+                    Button #send-btn
+                      type=submit
+                      variant=primary
+                      size=sm
+                      icon=send
+                      disabled=true
+                      aria-label="Send message"
+                      "Send"
+
+        Text size=xs color=muted align=center padding-top=xs
+          "SEAL Assistant can make mistakes. Verify important information."

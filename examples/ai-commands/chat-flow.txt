@@ -1,0 +1,170 @@
+// ============================================================================
+// AI Agent Example: Using a SEAL-powered Chat Interface
+// ============================================================================
+//
+// This file demonstrates an AI agent (or automation script) navigating a
+// SEAL chat page: reading available actions, switching models, sending
+// messages, and reading streamed responses.
+// ============================================================================
+
+
+// ── Step 1: Discover the chat page ──────────────────────────────────────────
+
+READ PAGE
+
+// Expected response (abbreviated):
+// {
+//   "page": { "id": "chat-page", "title": "SEAL Assistant", "route": "/chat" },
+//   "actions": [
+//     {
+//       "id": "new-chat-btn",
+//       "type": "Button",
+//       "label": "New Chat",
+//       "actions": ["CLICK", "FOCUS", "BLUR"]
+//     },
+//     {
+//       "id": "model-selector",
+//       "type": "Select",
+//       "label": "Model",
+//       "value": "seal-1",
+//       "options": [
+//         { "value": "seal-1",       "label": "SEAL 1 (Latest)",  "selected": true },
+//         { "value": "seal-1-mini",  "label": "SEAL 1 Mini",      "selected": false },
+//         { "value": "seal-1-pro",   "label": "SEAL 1 Pro",       "selected": false },
+//         { "value": "seal-preview", "label": "SEAL Preview",     "selected": false }
+//       ],
+//       "actions": ["SELECT", "FOCUS", "BLUR", "READ"]
+//     },
+//     {
+//       "id": "message-input",
+//       "type": "Textarea",
+//       "label": "Message",
+//       "placeholder": "Ask anything about SEAL...",
+//       "actions": ["FILL", "CLEAR", "FOCUS", "BLUR", "READ"]
+//     },
+//     {
+//       "id": "send-btn",
+//       "type": "Button",
+//       "label": "Send",
+//       "disabled": true,
+//       "actions": ["CLICK", "FOCUS", "BLUR"]
+//     },
+//     {
+//       "id": "message-list",
+//       "type": "Section",
+//       "role": "message-list",
+//       "messageCount": 4,
+//       "actions": ["READ", "SCROLL"]
+//     }
+//   ]
+// }
+
+
+// ── Step 2: Switch to a different model before sending ───────────────────────
+
+SELECT #model-selector WITH "seal-1-pro"
+
+// Expected response:
+// {
+//   "id": "model-selector",
+//   "action": "SELECT",
+//   "status": "ok",
+//   "value": "seal-1-pro",
+//   "label": "SEAL 1 Pro"
+// }
+
+
+// ── Step 3: Send a message ────────────────────────────────────────────────────
+
+FILL #message-input WITH "Explain the difference between SEAL and HTML in one paragraph."
+
+// Expected response:
+// { "id": "message-input", "action": "FILL", "status": "ok" }
+
+// Send button is now enabled because the textarea is non-empty:
+// { "id": "send-btn", "disabled": false }
+
+CLICK #send-btn
+
+// Expected response:
+// { "id": "send-btn", "action": "CLICK", "status": "ok" }
+
+
+// ── Step 4: Wait for the assistant response ───────────────────────────────────
+
+WAIT FOR element "#msg-5[data-state='complete']" TIMEOUT 30000
+
+// Response when streaming finishes:
+// { "event": "element-ready", "id": "msg-5", "status": "ok" }
+
+
+// ── Step 5: Read the assistant's response ────────────────────────────────────
+
+READ #msg-5
+
+// Expected response:
+// {
+//   "id": "msg-5",
+//   "type": "Article",
+//   "role": "assistant",
+//   "state": "complete",
+//   "text": "HTML describes structure and presentation — how a page looks and is arranged in the DOM. SEAL describes intent — what each element is for and what actions can be taken on it. Where HTML says '<input type=\"text\" class=\"form-control\" id=\"email\">', SEAL says 'Input #email type=email label=\"Email\" required=true'. The SEAL renderer then produces the HTML, ARIA attributes, and an AI manifest automatically, so both humans and AI agents work from the same source of truth.",
+//   "model": "seal-1-pro",
+//   "tokens": 89
+// }
+
+
+// ── Step 6: Read the full conversation ───────────────────────────────────────
+
+READ #message-list
+
+// Expected response:
+// {
+//   "id": "message-list",
+//   "type": "Section",
+//   "messages": [
+//     { "id": "msg-1", "role": "user",      "text": "How does SEAL handle forms compared to regular HTML?" },
+//     { "id": "msg-2", "role": "assistant", "text": "SEAL forms are dramatically simpler..." },
+//     { "id": "msg-3", "role": "user",      "text": "Can you show the AI manifest output for that form?" },
+//     { "id": "msg-4", "role": "assistant", "text": "Here's the AI manifest generated..." },
+//     { "id": "msg-5", "role": "assistant", "text": "HTML describes structure and presentation...", "model": "seal-1-pro" }
+//   ]
+// }
+
+
+// ── Step 7: Start a new chat ──────────────────────────────────────────────────
+
+CLICK #new-chat-btn
+
+// Expected response:
+// { "id": "new-chat-btn", "action": "CLICK", "status": "ok" }
+
+WAIT FOR navigation TIMEOUT 3000
+
+// Response:
+// { "event": "navigation", "status": "ok", "url": "/chat/new" }
+
+READ PAGE
+
+// New page manifest — empty message list, fresh state:
+// {
+//   "page": { "id": "chat-page", "title": "SEAL Assistant", "route": "/chat/new" },
+//   "actions": [
+//     { "id": "message-input", "type": "Textarea", "value": "", ... },
+//     { "id": "message-list",  "type": "Section",  "messageCount": 0, ... },
+//     ...
+//   ]
+// }
+
+
+// ── Step 8: Copy a previous response using the copy button ────────────────────
+
+// Navigate back
+NAVIGATE TO "/chat/c1"
+WAIT FOR navigation TIMEOUT 3000
+
+// Copy last assistant message
+CLICK "#msg-4 [aria-label='Copy']"
+
+// Expected response:
+// { "action": "CLICK", "status": "ok", "copied": true }

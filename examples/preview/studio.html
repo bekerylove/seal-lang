@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEAL Studio — AI-Native Web Builder</title>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script src="../../dist/seal.js"></script>
+    <style>
+        :root {
+            --slate-50: #f8fafc; --slate-200: #e2e8f0; --slate-300: #cbd5e1;
+            --slate-800: #1e293b; --slate-900: #0f172a; --slate-950: #020617;
+            --indigo-500: #6366f1; --indigo-600: #4f46e5;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--slate-950); color: white; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        
+        header { padding: 1rem 1.5rem; background: var(--slate-900); border-bottom: 1px solid var(--slate-800); display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 800; font-size: 1.25rem; letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.5rem; }
+        .logo span { color: var(--indigo-500); }
+        
+        main { flex: 1; display: grid; grid-template-columns: 260px 1fr 1fr; overflow: hidden; }
+        
+        .sidebar { background: var(--slate-950); border-right: 1px solid var(--slate-800); padding: 1.5rem; }
+        .sidebar h3 { font-size: 0.75rem; text-transform: uppercase; color: var(--slate-300); margin-bottom: 1rem; letter-spacing: 0.05em; }
+        .example-item { padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; font-size: 0.875rem; color: var(--slate-300); transition: all 0.2s; margin-bottom: 0.25rem; }
+        .example-item:hover { background: var(--slate-800); color: white; }
+        .example-item.active { background: var(--indigo-600); color: white; }
+
+        .editor-container { display: flex; flex-direction: column; border-right: 1px solid var(--slate-800); }
+        .pane-header { padding: 0.5rem 1rem; background: var(--slate-900); font-size: 0.75rem; font-weight: 600; color: var(--slate-300); display: flex; justify-content: space-between; }
+        textarea { flex: 1; background: #010409; color: #e6edf3; font-family: 'JetBrains Mono', monospace; padding: 1.5rem; border: none; outline: none; resize: none; font-size: 14px; line-height: 1.5; }
+
+        .preview-container { background: #f1f5f9; display: flex; flex-direction: column; }
+        #preview-iframe { flex: 1; border: none; background: white; margin: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+
+        footer { padding: 1rem 2rem; background: var(--slate-900); border-top: 1px solid var(--slate-800); display: flex; gap: 1rem; align-items: center; }
+        .magic-input { flex: 1; background: var(--slate-950); border: 1px solid var(--slate-800); padding: 0.75rem 1rem; border-radius: 8px; color: white; outline: none; transition: border 0.2s; }
+        .magic-input:focus { border-color: var(--indigo-500); }
+        .btn-run { background: var(--indigo-600); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .btn-run:hover { background: var(--indigo-500); }
+
+        #ai-log { font-size: 12px; color: var(--indigo-500); margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">SEAL <span>Studio</span></div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-run" style="padding: 0.5rem 1rem; background: var(--slate-800);" onclick="copyHtml()">Copy HTML</button>
+            <button class="btn-run" style="padding: 0.5rem 1rem;" onclick="copyManifest()">Export Manifest</button>
+        </div>
+    </header>
+    <main>
+        <div class="sidebar">
+            <h3>Examples</h3>
+            <div class="example-item active">Login Page</div>
+            <div class="example-item">Dashboard</div>
+            <div class="example-item">Chat Interface</div>
+            <div class="example-item">Feedback Form</div>
+            
+            <h3 style="margin-top: 2rem;">AI MANIFEST</h3>
+            <div id="manifest-list" style="font-size: 12px; font-family: monospace; color: var(--slate-300);">
+                <!-- Manifest items appear here -->
+            </div>
+        </div>
+        <div class="editor-container">
+            <div class="pane-header">SEAL SOURCE <span>main.seal</span></div>
+            <textarea id="editor" spellcheck="false">Page #login-page title="Welcome Back"
+  Body
+    Section variant=centered
+      Card variant=elevated
+        Stack gap=lg
+          Heading variant=heading-2 "Login"
+          Text variant=body "Enter your credentials to continue"
+          
+          Form #login-form
+            Input #email type=email label="Email" placeholder="admin@test.com"
+            Input #password type=password label="Password"
+            
+            Button #submit variant=primary "Sign In"
+          
+          Divider
+          
+          Flex justify=between align=center
+            Text variant=caption "New here?"
+            Link href="/signup" "Create account"</textarea>
+        </div>
+        <div class="preview-container">
+            <div class="pane-header">LIVE PREVIEW <span>Desktop (1280px)</span></div>
+            <iframe id="preview-iframe"></iframe>
+        </div>
+    </main>
+    <footer>
+        <div style="color: var(--indigo-500); font-weight: bold;">AI Command:</div>
+        <input type="text" id="ai-input" class="magic-input" placeholder="e.g. 'Login with email test@gmail.com'">
+        <button class="btn-run" onclick="executeAi()">Execute Action</button>
+        <div id="ai-log"></div>
+    </footer>
+
+    <script>
+        const editor = document.getElementById('editor');
+        const iframe = document.getElementById('preview-iframe');
+        const aiInput = document.getElementById('ai-input');
+        const aiLog = document.getElementById('ai-log');
+        const manifestList = document.getElementById('manifest-list');
+
+        function updatePreview() {
+            const source = editor.value;
+            try {
+                // Use the real SEAL library (via the bundled global)
+                const html = window.seal.compile(source);
+                const blob = new Blob([html], {type: 'text/html'});
+                iframe.src = URL.createObjectURL(blob);
+                
+                // Update Manifest UI
+                manifestList.innerHTML = source.includes('Button') ? 'BUTTON #submit<br>INPUT #email<br>INPUT #password' : 'No interactive elements';
+            } catch (e) {
+                console.error("Compilation error", e);
+            }
+        }
+
+        function executeAi() {
+            const instruction = aiInput.value;
+            const commands = window.seal.interpret(instruction);
+            aiLog.innerText = "Exec: " + commands.join(" → ");
+            
+            // Highlight element in preview
+            const doc = iframe.contentDocument;
+            const btn = doc.querySelector('button');
+            if (btn) {
+                btn.style.outline = "4px solid #6366f1";
+                btn.style.boxShadow = "0 0 0 10px rgba(99,102,241,0.2)";
+                setTimeout(() => {
+                    btn.style.outline = "";
+                    btn.style.boxShadow = "";
+                }, 1000);
+            }
+        }
+
+        function copyHtml() {
+            navigator.clipboard.writeText(iframe.contentDocument.documentElement.outerHTML);
+            alert("HTML Copied to clipboard!");
+        }
+
+        function copyManifest() {
+            alert("Manifest: { actions: [ 'FILL #email', 'FILL #password', 'CLICK #submit' ] }");
+        }
+
+        editor.addEventListener('input', updatePreview);
+        window.addEventListener('load', updatePreview);
+    </script>
+</body>
+</html>
