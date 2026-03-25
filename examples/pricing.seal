@@ -1,0 +1,26 @@
+﻿Page #pricing-page title="Simple Pricing"
+  Body
+    Section variant=centered
+      Stack gap=xl align=center
+        Stack gap=sm align=center
+          Heading variant=heading-1 "Ready to get started?"
+          Text variant=body "Choose the plan that's right for you."
+        
+        Flex gap=lg
+          Card variant=elevated
+            Stack gap=md
+              Text variant=caption "STARTER"
+              Heading variant=heading-2 "$0"
+              Divider
+              Text "Up to 3 projects"
+              Text "Basic AI features"
+              Button variant=secondary "Start for free"
+          
+          Card variant=elevated border=primary
+            Stack gap=md
+              Text variant=caption "PRO"
+              Heading variant=heading-2 "$29"
+              Divider
+              Text "Unlimited projects"
+              Text "Advanced AI features"
+              Button variant=primary "Go Pro"

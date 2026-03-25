@@ -1,0 +1,22 @@
+﻿Page #profile-page title="User Profile"
+  Body
+    Container size=md
+      Stack gap=xl
+        Flex justify=between align=center
+          Heading variant=heading-2 "Account Settings"
+          Button variant=primary "Save Changes"
+        
+        Card
+          Stack gap=lg
+            Heading variant=heading-3 "Personal Information"
+            Grid columns=2 gap=md
+              Input #first-name label="First Name" value="John"
+              Input #last-name label="Last Name" value="Doe"
+              Input #email label="Email" type=email value="john@example.com"
+              Input #phone label="Phone" type=tel value="+1 234 567 890"
+        
+        Card
+          Stack gap=lg
+            Heading variant=heading-3 "Security"
+            Button variant=secondary "Change Password"
+            Button variant=danger "Delete Account"

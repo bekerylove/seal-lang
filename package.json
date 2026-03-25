@@ -1,6 +1,6 @@
 {
   "name": "seal-lang",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Semantic and Action Language for AI-web interaction",
   "main": "src/index.js",
   "bin": {
