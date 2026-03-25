@@ -3,6 +3,19 @@
   "version": "0.1.0",
   "description": "Semantic and Action Language for AI-web interaction",
   "main": "src/index.js",
+  "bin": {
+    "seal": "src/cli/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bekerylove/seal-lang.git"
+  },
+  "files": [
+    "src",
+    "dist",
+    "spec",
+    "README.md"
+  ],
   "scripts": {
     "test": "node tests/parser.test.js",
     "parse": "node src/cli/index.js parse",
