@@ -198,19 +198,24 @@ function validate(source) {
   }
 }
 
-// â”€â”€ Module exports â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Module exports ────────────────────────────────────────────────────────────
 
 module.exports = {
   parse,
   render,
   compile,
   manifest,
-  scan,
   execute,
   interpret,
   validate,
   scan,
 };
 
-function scan(root) { return require('./bridge/index').scan(root); }
+/**
+ * Scan the DOM for SEAL-compatible elements.
+ * @param {Document|HTMLElement} [root]
+ */
+function scan(root) {
+  return require('./bridge/index').scan(root);
+}
 

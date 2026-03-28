@@ -8,7 +8,11 @@
  * Looks for elements with [data-seal-id] or [id] and semantic roles.
  * @returns {Object} AI Manifest of the current live page.
  */
-function scan(root = document) {
+function scan(root) {
+  // Fallback to global document if available
+  if (!root && typeof document !== 'undefined') root = document;
+  if (!root) return { actions: [] };
+
   const elements = root.querySelectorAll("[data-seal-id], input, button, select, a");
   const actions = [];
 
@@ -36,8 +40,8 @@ function scan(root = document) {
   });
 
   return {
-    url: window.location.href,
-    title: document.title,
+    url: (typeof window !== 'undefined') ? window.location.href : '',
+    title: (typeof document !== 'undefined') ? document.title : '',
     actions
   };
 }
