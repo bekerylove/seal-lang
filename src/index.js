@@ -1,5 +1,5 @@
-/**
- * @fileoverview SEAL — Main Module
+﻿/**
+ * @fileoverview SEAL â€” Main Module
  *
  * Exports the complete SEAL toolchain as a single coherent API.
  *
@@ -7,14 +7,14 @@
  *   const seal = require('seal-lang');
  *   const ast  = seal.parse(source);
  *   const html = seal.render(ast);
- *   // …
+ *   // â€¦
  *
  * @module seal
  */
 
 'use strict';
 
-// ── Sub-module references ─────────────────────────────────────────────────────
+// â”€â”€ Sub-module references â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 //
 // The real parser and renderer modules live alongside this file.
 // Loading is deferred until first call to keep boot cheap.
@@ -34,7 +34,7 @@ function getRenderer() {
   return _rendererMod;
 }
 
-// ── Public API ────────────────────────────────────────────────────────────────
+// â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
  * Parse SEAL source text into an AST.
@@ -68,14 +68,14 @@ function parse(source) {
  *
  * @param {Object} ast        - AST previously returned by {@link parse}.
  * @param {Object} [options]  - Options forwarded to the renderer.
- * @returns {string} Full `<!DOCTYPE html>…` page string.
+ * @returns {string} Full `<!DOCTYPE html>â€¦` page string.
  *
  * @example
  * const html = seal.render(ast);
  */
 function render(ast, options) {
   const result = getRenderer().render(ast, options);
-  // The renderer returns { html, css, manifest } — unwrap html for convenience.
+  // The renderer returns { html, css, manifest } â€” unwrap html for convenience.
   return result.html || result;
 }
 
@@ -109,7 +109,7 @@ function compile(source, options) {
  *
  * @example
  * const mf = seal.manifest(ast);
- * // mf.actions → [{ id: "email", type: "Input", actions: ["FILL", "CLEAR", …] }, …]
+ * // mf.actions â†’ [{ id: "email", type: "Input", actions: ["FILL", "CLEAR", â€¦] }, â€¦]
  */
 function manifest(ast, options) {
   const result = getRenderer().render(ast, options);
@@ -132,7 +132,7 @@ function manifest(ast, options) {
  *
  * @example
  * const results = seal.execute('FILL #email WITH "user@example.com"\nCLICK #submit-btn');
- * results[0].playwright // → `await page.fill('[data-seal-id="email"]', 'user@example.com');`
+ * results[0].playwright // â†’ `await page.fill('[data-seal-id="email"]', 'user@example.com');`
  */
 function execute(commandSource, ast) { // eslint-disable-line no-unused-vars
   const { parse: parseCmd }  = require('./ai-protocol/index');
@@ -152,12 +152,12 @@ function execute(commandSource, ast) { // eslint-disable-line no-unused-vars
  *
  * @example
  * seal.interpret('Login with email test@gmail.com and password 123456')
- * // → ["FILL #email WITH 'test@gmail.com'", "FILL #password WITH '123456'",
+ * // â†’ ["FILL #email WITH 'test@gmail.com'", "FILL #password WITH '123456'",
  * //    "CLICK #submit-btn", "WAIT FOR navigation"]
  *
  * @example
  * seal.interpret('Select Thailand from the country dropdown')
- * // → ["SELECT #country WITH 'Thailand'"]
+ * // â†’ ["SELECT #country WITH 'Thailand'"]
  */
 function interpret(instruction) {
   const { interpret: _interpret, interpretAll } = require('./ai-protocol/interpreter');
@@ -198,14 +198,19 @@ function validate(source) {
   }
 }
 
-// ── Module exports ────────────────────────────────────────────────────────────
+// â”€â”€ Module exports â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 module.exports = {
   parse,
   render,
   compile,
   manifest,
+  scan,
   execute,
   interpret,
   validate,
+  scan,
 };
+
+function scan(root) { return require('./bridge/index').scan(root); }
+
